@@ -328,7 +328,7 @@ public class CppGenerator implements CodeGenerator
             indent + "    }\n",
             dimensionHeaderLength, blockLength, formatClassName(groupName));
 
-        sb.append(indent).append("#if __cplusplus < 201103L\n")
+        sb.append(indent).append("#if SBE_CPLUSPLUS < 201103L\n")
             .append(indent).append("    template<class Func> inline void forEach(Func& func)\n")
             .append(indent).append("    {\n")
             .append(indent).append("        while (hasNext())\n")
@@ -542,7 +542,7 @@ public class CppGenerator implements CodeGenerator
             generateJsonEscapedStringGetter(sb, token, indent, propertyName);
 
             new Formatter(sb).format("\n" +
-                indent + "    #if __cplusplus >= 201703L\n" +
+                indent + "    #if SBE_CPLUSPLUS >= 201703L\n" +
                 indent + "    std::string_view get%1$sAsStringView()\n" +
                 indent + "    {\n" +
                 "%2$s" +
@@ -1001,13 +1001,25 @@ public class CppGenerator implements CodeGenerator
             "#  define SBE_DOUBLE_NAN NAN\n" +
             "#endif\n\n" +
 
-            "#if __cplusplus >= 201103L\n" +
+            "#if defined(_MSC_VER)\n" +
+            "#  if _MSC_VER >= 1911\n" +
+            "#    define SBE_CPLUSPLUS _MSVC_LANG\n" +
+            "#  elif _MSC_VER >= 1900\n" +
+            "#    define SBE_CPLUSPLUS 201103L\n" +
+            "#  else\n" +
+            "#    define SBE_CPLUSPLUS __cplusplus\n" +
+            "#  endif // _MSC_VER >= 1900\n" +
+            "#else\n" +
+            "#  define SBE_CPLUSPLUS __cplusplus\n" +
+            "#endif // defined(_MSC_VER)\n\n" +
+
+            "#if SBE_CPLUSPLUS >= 201103L\n" +
             "#  include <cstdint>\n" +
             "#  include <string>\n" +
             "#  include <cstring>\n" +
             "#endif\n\n" +
 
-            "#if __cplusplus >= 201103L\n" +
+            "#if SBE_CPLUSPLUS >= 201103L\n" +
             "#  define SBE_CONSTEXPR constexpr\n" +
             "#  define SBE_NOEXCEPT noexcept\n" +
             "#else\n" +
@@ -1015,7 +1027,7 @@ public class CppGenerator implements CodeGenerator
             "#  define SBE_NOEXCEPT\n" +
             "#endif\n\n" +
 
-            "#if __cplusplus >= 201703L\n" +
+            "#if SBE_CPLUSPLUS >= 201703L\n" +
             "#  define SBE_NODISCARD [[nodiscard]]\n" +
             "#else\n" +
             "#  define SBE_NODISCARD\n" +
@@ -1518,7 +1530,7 @@ public class CppGenerator implements CodeGenerator
             generateJsonEscapedStringGetter(sb, encodingToken, indent, propertyName);
 
             new Formatter(sb).format("\n" +
-                indent + "    #if __cplusplus >= 201703L\n" +
+                indent + "    #if SBE_CPLUSPLUS >= 201703L\n" +
                 indent + "    std::string_view get%1$sAsStringView() const SBE_NOEXCEPT\n" +
                 indent + "    {\n" +
                 indent + "        const char *buffer = m_buffer + m_offset + %2$d;\n" +
@@ -1535,7 +1547,7 @@ public class CppGenerator implements CodeGenerator
                 arrayLength);
 
             new Formatter(sb).format("\n" +
-                indent + "    #if __cplusplus >= 201703L\n" +
+                indent + "    #if SBE_CPLUSPLUS >= 201703L\n" +
                 indent + "    %1$s &put%2$s(const std::string_view str)\n" +
                 indent + "    {\n" +
                 indent + "        const size_t srcLength = str.length();\n" +
