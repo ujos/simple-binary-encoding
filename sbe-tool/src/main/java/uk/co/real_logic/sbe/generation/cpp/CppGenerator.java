@@ -874,27 +874,10 @@ public class CppGenerator implements CodeGenerator
         new Formatter(sb).format(
             "    static %1$s::Value get(const %2$s value)\n" +
             "    {\n" +
-            "        switch (value)\n" +
-            "        {\n",
+            "        return static_cast<%1$s::Value>(value);\n" +
+            "    }\n",
             enumName,
             cppTypeName(tokens.get(0).encoding().primitiveType()));
-
-        for (final Token token : tokens)
-        {
-            new Formatter(sb).format(
-                "            case %1$s: return %2$s;\n",
-                token.encoding().constValue().toString(),
-                token.name());
-        }
-
-        new Formatter(sb).format(
-            "            case %1$s: return NULL_VALUE;\n" +
-            "        }\n\n" +
-
-            "        throw std::runtime_error(\"unknown value for enum %2$s [E103]\");\n" +
-            "    }\n",
-            encodingToken.encoding().applicableNullValue().toString(),
-            enumName);
 
         return sb;
     }
