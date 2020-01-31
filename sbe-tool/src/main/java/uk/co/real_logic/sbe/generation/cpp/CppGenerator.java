@@ -802,7 +802,7 @@ public class CppGenerator implements CodeGenerator
         final Encoding encoding = encodingToken.encoding();
 
         sb.append(
-            "    enum Value\n" +
+            "    enum Value : " + cppTypeName(tokens.get(0).encoding().primitiveType()) + "\n" +
             "    {\n");
 
         for (final Token token : tokens)
@@ -1095,7 +1095,7 @@ public class CppGenerator implements CodeGenerator
         new Formatter(sb).format("\n" +
             indent + "    static SBE_CONSTEXPR std::size_t %1$sEncodingLength() SBE_NOEXCEPT\n" +
             indent + "    {\n" +
-            indent + "        return %2$d;\n" +
+            indent + "        return (std::size_t)%2$d;\n" +
             indent + "    }\n",
             propertyName,
             token.encoding().primitiveType().size() * token.arrayLength());
@@ -1630,7 +1630,7 @@ public class CppGenerator implements CodeGenerator
 
             "    SBE_NODISCARD static SBE_CONSTEXPR size_t encodedLength() SBE_NOEXCEPT\n" +
             "    {\n" +
-            "        return %2$s;\n" +
+            "        return (size_t)%2$s;\n" +
             "    }\n\n" +
 
             "    SBE_NODISCARD size_t offset() const SBE_NOEXCEPT\n" +
