@@ -1323,18 +1323,6 @@ public class CppGenerator implements CodeGenerator
             offset,
             cppTypeName);
 
-        new Formatter(sb).format("\n" +
-            indent + "    %1$s &put%2$s(const char *const src) SBE_NOEXCEPT\n" +
-            indent + "    {\n" +
-            indent + "        std::memcpy(m_buffer + m_offset + %3$d, src, sizeof(%4$s) * %5$d);\n" +
-            indent + "        return *this;\n" +
-            indent + "    }\n",
-            containingClassName,
-            toUpperFirstChar(propertyName),
-            offset,
-            cppTypeName,
-            arrayLength);
-
         if (arrayLength > 1 && arrayLength <= 4)
         {
             sb.append("\n").append(indent).append("    ")
