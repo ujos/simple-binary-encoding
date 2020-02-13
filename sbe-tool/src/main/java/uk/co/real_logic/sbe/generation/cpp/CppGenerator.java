@@ -901,6 +901,7 @@ public class CppGenerator implements CodeGenerator
             "#include <cstring>\n" +
             "#include <limits>\n" +
             "#include <algorithm>\n" +
+            "#include <cctype>\n" +
             "#include <stdexcept>\n\n" +
             "#include <ostream>\n" +
             "#include <sstream>\n" +
@@ -2381,7 +2382,7 @@ public class CppGenerator implements CodeGenerator
                     if (typeToken.encoding().primitiveType() == PrimitiveType.CHAR)
                     {
                         sb.append(
-                            indent + "if (std::isprint(" + fieldName + "()))\n" +
+                            indent + "if (std::isprint((char)" + fieldName + "()))\n" +
                             indent + "{\n" +
                             indent + "    builder << '\"' << (char)" + fieldName + "() << '\"';\n" +
                             indent + "}\n" +
