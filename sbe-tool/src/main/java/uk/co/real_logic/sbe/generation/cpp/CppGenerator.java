@@ -2491,7 +2491,7 @@ public class CppGenerator implements CodeGenerator
         new Formatter(sb).format(
             "            case NULL_VALUE: return \"NULL_VALUE\";\n" +
             "        }\n\n" +
-            "        throw std::runtime_error(\"unknown value for enum %1$s [E103]:\");\n" +
+            "        return (\"unknown value for enum %1$s [E103]:\");\n" +
             "    }\n\n" +
 
             "    template<typename CharT, typename Traits>\n" +
