@@ -89,6 +89,7 @@ public class CSharpGenerator implements CodeGenerator
 
     public void generate() throws IOException
     {
+        generateIMessageCode();
         generateMessageHeaderStub();
         generateTypeStubs();
 
@@ -101,7 +102,7 @@ public class CSharpGenerator implements CodeGenerator
             {
                 out.append(generateFileHeader(ir.applicableNamespace()));
                 out.append(generateDocumentation(BASE_INDENT, msgToken));
-                out.append(generateClassDeclaration(className));
+                out.append(generateMessageClassDeclaration(className));
                 out.append(generateMessageFlyweightCode(className, msgToken, BASE_INDENT));
 
                 final List<Token> messageBody = tokens.subList(1, tokens.size() - 1);
@@ -625,6 +626,14 @@ public class CSharpGenerator implements CodeGenerator
             sb);
     }
 
+    private CharSequence generateMessageClassDeclaration(final String className)
+    {
+        return String.format(
+            INDENT + "public sealed partial class %s : IMessage\n" +
+            INDENT + "{\n",
+            className);
+    }
+
     private CharSequence generateClassDeclaration(final String className)
     {
         return String.format(
@@ -1077,6 +1086,28 @@ public class CSharpGenerator implements CodeGenerator
             size);
     }
 
+    private void generateIMessageCode() throws IOException
+    {
+        try (Writer out = outputManager.createOutput("IMessage"))
+        {
+            out.append(generateFileHeader(ir.applicableNamespace()));
+            out.append(INDENT + "/// <summary>\n");
+            out.append(INDENT + "/// Message interface\n");
+            out.append(INDENT + "/// </summary>\n");
+            out.append(INDENT + "public interface IMessage\n");
+            out.append(INDENT + "{\n");
+            out.append(INDENT + INDENT + "public ushort GeneratedBlockLength {get;}\n");
+            out.append(INDENT + INDENT + "public int Size {get;}\n");
+            out.append(INDENT + INDENT + "public void WrapForEncode(DirectBuffer buffer, int offset);\n");
+            out.append(INDENT + INDENT + "public void WrapForEncodeAndApplyHeader(DirectBuffer buffer, " +
+                "int offset,  MessageHeader headerEncoder);\n");
+            out.append(INDENT + INDENT + "public void WrapForDecode(DirectBuffer buffer, int offset, " +
+                "int actingBlockLength, int actingVersion);\n");
+            out.append(INDENT + "}\n");
+            out.append("}\n");
+        }
+    }
+
     private CharSequence generateMessageFlyweightCode(final String className, final Token token, final String indent)
     {
         final String blockLengthType = cSharpTypeName(ir.headerStructure().blockLengthType());
@@ -1098,6 +1129,7 @@ public class CSharpGenerator implements CodeGenerator
             indent + INDENT + "private int _actingBlockLength;\n" +
             indent + INDENT + "private int _actingVersion;\n" +
             "\n" +
+            indent + INDENT + "public ushort GeneratedBlockLength { get { return BlockLength; } }\n\n" +
             indent + INDENT + "public int Offset { get { return _offset; } }\n\n" +
             indent + INDENT + "public %10$s()\n" +
             indent + INDENT + "{\n" +
