@@ -1096,12 +1096,12 @@ public class CSharpGenerator implements CodeGenerator
             out.append(INDENT + "/// </summary>\n");
             out.append(INDENT + "public interface IMessage\n");
             out.append(INDENT + "{\n");
-            out.append(INDENT + INDENT + "public ushort GeneratedBlockLength {get;}\n");
-            out.append(INDENT + INDENT + "public int Size {get;}\n");
-            out.append(INDENT + INDENT + "public void WrapForEncode(DirectBuffer buffer, int offset);\n");
-            out.append(INDENT + INDENT + "public void WrapForEncodeAndApplyHeader(DirectBuffer buffer, " +
+            out.append(INDENT + INDENT + "ushort GeneratedBlockLength {get;}\n");
+            out.append(INDENT + INDENT + "int Size {get;}\n");
+            out.append(INDENT + INDENT + "void WrapForEncode(DirectBuffer buffer, int offset);\n");
+            out.append(INDENT + INDENT + "void WrapForEncodeAndApplyHeader(DirectBuffer buffer, " +
                 "int offset,  MessageHeader headerEncoder);\n");
-            out.append(INDENT + INDENT + "public void WrapForDecode(DirectBuffer buffer, int offset, " +
+            out.append(INDENT + INDENT + "void WrapForDecode(DirectBuffer buffer, int offset, " +
                 "int actingBlockLength, int actingVersion);\n");
             out.append(INDENT + "}\n");
             out.append("}\n");
