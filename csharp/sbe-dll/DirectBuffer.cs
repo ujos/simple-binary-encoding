@@ -646,6 +646,23 @@ namespace Org.SbeTool.Sbe.Dll
         }
 
         /// <summary>
+        /// Writes a <see cref="Span{T}" /> into the underlying buffer and fills the tail with zeros.
+        /// </summary>
+        /// <param name="index">index  in the underlying buffer to start from.</param>
+        /// <param name="length">Length of the field inside the underlying buffer</param>
+        /// <param name="src">source <see cref="Span{T}" /> to be copied to the underlying buffer.</param>
+        public void SetBytesAndClear(int index, int length, ReadOnlySpan<byte> src)
+        {
+            Span<byte> dst = AsSpan<byte>(index, length);
+            src.CopyTo(dst);
+
+            if (src.Length < dst.Length)
+            { 
+                dst.Slice(src.Length).Clear();
+            }
+        }
+
+        /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>
         /// <filterpriority>2</filterpriority>
